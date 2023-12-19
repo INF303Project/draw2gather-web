@@ -1,20 +1,31 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
     import { createEventDispatcher } from "svelte";
 
     const dispatch = createEventDispatcher();
 
     let language: string;
-    let numberOfPlayers: number;
-    let points: number;
-    let rounds: number;
+    let maxPlayers: number;
+    let targetScore: number;
     let visibility: boolean;
 
-    const log = () => {
-        console.log(language);
-        console.log(numberOfPlayers);
-        console.log(points);
-        console.log(rounds);
-        console.log(visibility);
+    const log = async () => {
+        const create = await fetch("http://localhost:8080/games", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                max_players: maxPlayers,
+                target_score: targetScore,
+                language,
+                visibility,
+            }),
+            credentials: "include",
+        });
+        const data = await create.json();
+        const gameId = data.id;
+        await goto(`/${gameId}`);
     };
 </script>
 
@@ -33,35 +44,24 @@
 
         <div class="row">
             <label>
-                Number of Players
-                <select class="form-select" bind:value={numberOfPlayers}>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
+                Max Players
+                <select class="form-select" bind:value={maxPlayers}>
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={15}>15</option>
                 </select>
             </label>
         </div>
 
         <div class="row">
             <label>
-                Points
-                <select class="form-select" bind:value={points}>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
+                Target Score
+                <select class="form-select" bind:value={targetScore}>
+                    <option value={5}>5</option>
+                    <option value={10}>10</option>
+                    <option value={15}>15</option>
                 </select></label
             >
-        </div>
-
-        <div class="row">
-            <label>
-                Rounds
-                <select class="form-select" bind:value={rounds}>
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="15">15</option>
-                </select>
-            </label>
         </div>
 
         <div class="row">
@@ -72,8 +72,7 @@
                         class="form-check-input"
                         type="checkbox"
                         role="switch"
-                        checked
-                        bind:value={visibility}
+                        bind:checked={visibility}
                     />
                 </div>
             </label>
