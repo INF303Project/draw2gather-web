@@ -3,13 +3,26 @@
     import CreateGame from "$lib/components/CreateGame.svelte";
     import Game from "$lib/components/GameCard.svelte";
 
-    // export let data: PageData;
+    export let data: PageData;
 
     const createGame = () => {
         const games = document.getElementById("games");
         const createGame = document.getElementById("create-game");
         games?.classList.toggle("d-none");
         createGame?.classList.toggle("d-none");
+    };
+
+    const filterLang = async (e: Event) => {
+        const lang = (e.target as HTMLSelectElement).value;
+        if (lang === "ALL") {
+            const res = await fetch("http://localhost:8080/games");
+            const newData = await res.json();
+            data = newData;
+        } else {
+            const res = await fetch(`http://localhost:8080/games?lang=${lang}`);
+            const newData = await res.json();
+            data = newData;
+        }
     };
 </script>
 
@@ -23,8 +36,9 @@
             <h4 style="margin: 0px;">Games</h4>
 
             <div>
-                <select class="form-select">
+                <select class="form-select" on:change={filterLang}>
                     <option disabled selected>Language</option>
+                    <option value="ALL">All</option>
                     <option value="TR">Turkish</option>
                     <option value="EN">English</option>
                     <option value="DE">German</option>
@@ -33,19 +47,14 @@
         </div>
 
         <div id="game-list">
-            <Game gameId="1234" currentPlayers={5} maxPlayers={5} lang="TR" />
-            <Game gameId="1234" currentPlayers={2} maxPlayers={5} lang="TR" />
-            <Game gameId="1234" currentPlayers={2} maxPlayers={5} lang="TR" />
-            <Game gameId="1234" currentPlayers={2} maxPlayers={5} lang="TR" />
-            <Game gameId="1234" currentPlayers={2} maxPlayers={5} lang="TR" />
-            <Game gameId="1234" currentPlayers={2} maxPlayers={5} lang="TR" />
-            <Game gameId="1234" currentPlayers={2} maxPlayers={5} lang="TR" />
-            <Game gameId="1234" currentPlayers={2} maxPlayers={5} lang="TR" />
-            <Game gameId="1234" currentPlayers={2} maxPlayers={5} lang="TR" />
-            <Game gameId="1234" currentPlayers={2} maxPlayers={5} lang="TR" />
-            <Game gameId="1234" currentPlayers={2} maxPlayers={5} lang="TR" />
-            <Game gameId="1234" currentPlayers={2} maxPlayers={5} lang="TR" />
-            <Game gameId="1234" currentPlayers={5} maxPlayers={5} lang="TR" />
+            {#each data.games as game}
+                <Game
+                    gameId={game.id}
+                    lang={game.language}
+                    currentPlayers={game.current_players}
+                    maxPlayers={game.max_players}
+                />
+            {/each}
         </div>
 
         <button
