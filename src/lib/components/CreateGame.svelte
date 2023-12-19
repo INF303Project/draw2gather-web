@@ -9,7 +9,7 @@
     let targetScore: number;
     let visibility: boolean;
 
-    const log = async () => {
+    const createGame = async () => {
         const create = await fetch("http://localhost:8080/games", {
             method: "POST",
             headers: {
@@ -30,7 +30,7 @@
 </script>
 
 <div id="form">
-    <form on:submit={log}>
+    <form on:submit={createGame}>
         <div class="row">
             <label>
                 Language
