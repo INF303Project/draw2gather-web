@@ -1,5 +1,5 @@
 <script lang="ts">
-    import google from "$lib/assets/google.png";
+    import google from "$lib/assets/google.svg";
 </script>
 
 <div id="providers">
