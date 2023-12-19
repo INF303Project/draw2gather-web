@@ -8,8 +8,8 @@
     export let maxPlayers: number;
     export let lang: string;
 
-    const gotoGame = () => {
-        goto(`/${gameId}`);
+    const gotoGame = async () => {
+        await goto(`/${gameId}`);
     };
 </script>
 
