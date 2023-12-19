@@ -5,9 +5,6 @@
     import HorTools from "$lib/components/HorTools.svelte";
     import PlayerList from "$lib/components/PlayerList.svelte";
     import Tools from "$lib/components/Tools.svelte";
-    import type { PageData } from "./$types";
-
-    // export let data: PageData;
 
     const swapChat = () => {
         const answers = document.getElementById("answers");
