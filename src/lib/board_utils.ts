@@ -40,7 +40,7 @@ class Board {
     private drawColor: string = DEFAULT_DRAW_COLOR;
     private lineWidth: number = DEFAULT_LINE_WIDTH;
     private eraserWidth: number = DEFAULT_ERASER_WIDTH;
-    readonly socket: WebSocket = new WebSocket("ws://192.168.0.10:8080/game");
+    readonly socket: WebSocket = new WebSocket("ws://localhost:8080/game");
 
     private static instance: Board;
 
