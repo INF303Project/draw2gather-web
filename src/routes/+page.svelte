@@ -3,7 +3,7 @@
     import QuickPlay from "$lib/components/QuickPlay.svelte";
     import ProviderSign from "$lib/components/ProviderSign.svelte";
 
-    // export let data: PageData;
+    export let data: PageData;
 </script>
 
 <div id="content" class="container">
@@ -13,7 +13,7 @@
 
     <div id="cards" class="row">
         <div class="col-md-6">
-            <QuickPlay />
+            <QuickPlay username={data.name} />
         </div>
         <div class="col-md-6">
             <ProviderSign />
