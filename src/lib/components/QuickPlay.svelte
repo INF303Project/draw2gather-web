@@ -1,10 +1,21 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
 
-    let username: string;
+    export let username: string;
 
-    const gotoGames = () => {
-        goto("/games");
+    const gotoGames = async () => {
+        try {
+            await fetch("http://localhost:8080/user", {
+                method: "POST",
+                body: JSON.stringify({
+                    name: username,
+                }),
+                credentials: "include",
+            });
+            await goto("/games");
+        } catch (err) {
+            console.error(err);
+        }
     };
 </script>
 
@@ -18,6 +29,7 @@
                 class="form-control"
                 type="text"
                 placeholder="Enter your username"
+                minlength="1"
                 bind:value={username}
             />
         </label>
