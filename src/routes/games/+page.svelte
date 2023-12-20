@@ -15,11 +15,18 @@
     const filterLang = async (e: Event) => {
         const lang = (e.target as HTMLSelectElement).value;
         if (lang === "ALL") {
-            const res = await fetch("http://localhost:8080/games");
+            const res = await fetch("http://192.168.0.10:8080/games", {
+                credentials: "include",
+            });
             const newData = await res.json();
             data = newData;
         } else {
-            const res = await fetch(`http://localhost:8080/games?lang=${lang}`);
+            const res = await fetch(
+                `http://192.168.0.10:8080/games?lang=${lang}`,
+                {
+                    credentials: "include",
+                },
+            );
             const newData = await res.json();
             data = newData;
         }

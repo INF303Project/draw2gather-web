@@ -5,7 +5,7 @@ export const load = (async ({ fetch, params }) => {
     let joined: boolean = false;
 
     try {
-        const resp = await fetch("http://localhost:8080/game", {
+        const resp = await fetch("http://192.168.0.10:8080/game", {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",

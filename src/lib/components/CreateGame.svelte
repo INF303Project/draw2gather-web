@@ -10,7 +10,7 @@
     let visibility: boolean;
 
     const createGame = async () => {
-        const create = await fetch("http://localhost:8080/games", {
+        const create = await fetch("http://192.168.0.10:8080/games", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
