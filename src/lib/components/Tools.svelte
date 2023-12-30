@@ -8,9 +8,14 @@
         RectDraw,
         RectFill,
         ColorPicker,
-    } from "$lib/board_utils";
-    import type { Utility } from "$lib/board_utils";
-    import { boardColor, pencilWidth, eraserWidth } from "$lib/stores";
+    } from "$lib/utility";
+    import {
+        boardColor,
+        pencilWidth,
+        eraserWidth,
+        game,
+        utility,
+    } from "$lib/stores";
 
     import stylus from "$lib/assets/stylus.svg";
     import eraser from "$lib/assets/eraser.svg";
@@ -23,55 +28,61 @@
     import blank from "$lib/assets/page.svg";
     import save from "$lib/assets/download.svg";
     import palette from "$lib/assets/palette.svg";
-    import { boardUtility } from "$lib/stores";
 
     let current_selected: HTMLElement | null = null;
 
-    boardUtility.subscribe((utility) => {
-        if (current_selected) {
-            current_selected.style.backgroundColor = "transparent";
-        }
-
-        if (utility) {
-            const tool = document.querySelector(
-                `#tools button[value="${utility.type}"]`,
-            ) as HTMLInputElement;
-            if (tool) {
-                current_selected = tool;
-                current_selected.style.backgroundColor = "#ccc";
-            }
-        }
-    });
-
-    const changeUtil = (e: Event) => {
-        const target = (e.target as HTMLElement)
-            .parentElement as HTMLInputElement;
-        const value = target.value as Utility;
-
-        if (value == "FreeDraw") {
-            boardUtility.set(FreeDraw.getInstance());
-        } else if (value == "Eraser") {
-            boardUtility.set(Eraser.getInstance());
-        } else if (value == "ColorPicker") {
-            boardUtility.set(ColorPicker.getInstance());
-        } else if (value == "LineDraw") {
-            boardUtility.set(LineDraw.getInstance());
-        } else if (value == "RectDraw") {
-            boardUtility.set(RectDraw.getInstance());
-        } else if (value == "RectFill") {
-            boardUtility.set(RectFill.getInstance());
-        } else if (value == "CircleDraw") {
-            boardUtility.set(CircleDraw.getInstance());
-        } else if (value == "CircleFill") {
-            boardUtility.set(CircleFill.getInstance());
-        }
+    const changeUtil = (event: Event) => {
+        const target = (event.target as HTMLElement)
+            .parentElement as HTMLButtonElement;
+        const value = target.value;
 
         if (current_selected) {
             current_selected.style.backgroundColor = "transparent";
         }
-
         current_selected = target;
         current_selected.style.backgroundColor = "#ccc";
+
+        switch (value) {
+            case "FreeDraw":
+                $utility = new FreeDraw();
+                break;
+            case "Eraser":
+                $utility = new Eraser();
+                break;
+            case "ColorPicker":
+                $utility = new ColorPicker();
+                break;
+            case "LineDraw":
+                $utility = new LineDraw();
+                break;
+            case "RectDraw":
+                $utility = new RectDraw();
+                break;
+            case "RectFill":
+                $utility = new RectFill();
+                break;
+            case "CircleDraw":
+                $utility = new CircleDraw();
+                break;
+            case "CircleFill":
+                $utility = new CircleFill();
+                break;
+        }
+    };
+
+    const changeColor = (event: Event) => {
+        const value = (event.target as HTMLInputElement).value;
+        $game?.changeColor(value);
+    };
+
+    const changePencilSize = (event: Event) => {
+        const value = Number((event.target as HTMLInputElement).value);
+        $game?.changeLineWidth(value);
+    };
+
+    const changeEraserSize = (event: Event) => {
+        const value = Number((event.target as HTMLInputElement).value);
+        $game?.changeEraserWidth(value);
     };
 </script>
 
@@ -118,7 +129,7 @@
                 id="colorPicker"
                 type="color"
                 style="position: absolute; opacity: 0; width: 24px; height: 24px;"
-                on:change={(e) => $boardUtility.changeColor(e)}
+                on:change={changeColor}
             />
             <img src={palette} alt="Color Palette" />
         </button>
@@ -129,14 +140,10 @@
     </div>
 
     <div>
-        <button
-            on:click={(_) => {
-                $boardUtility.clear();
-            }}
-        >
+        <button on:click={$game?.clearBoard}>
             <img src={blank} alt="Clear" />
         </button>
-        <button on:click={(_) => $boardUtility.save()}>
+        <button on:click={$game?.saveImage}>
             <img src={save} alt="Download" />
         </button>
     </div>
@@ -150,7 +157,7 @@
                 max="10"
                 orient="vertical"
                 bind:value={$pencilWidth}
-                on:change={(e) => $boardUtility.changePencilSize(e)}
+                on:change={changePencilSize}
             />
         </div>
 
@@ -163,9 +170,7 @@
                 step="5"
                 orient="vertical"
                 bind:value={$eraserWidth}
-                on:change={(e) => {
-                    $boardUtility.changeEraserSize(e);
-                }}
+                on:change={changeEraserSize}
             />
         </div>
     </div>
@@ -189,7 +194,7 @@
         align-items: center;
     }
 
-    #tools button {
+    #tools div button {
         all: unset;
         cursor: pointer;
 
@@ -204,7 +209,7 @@
         height: 24px;
     }
 
-    #tools button :hover {
+    #tools div button :hover {
         background-color: #ccc;
     }
 

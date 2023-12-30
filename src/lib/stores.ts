@@ -1,27 +1,24 @@
-import type { BoardUtility } from "$lib/board_utils";
 import { writable } from "svelte/store";
+import type { State, Game, Player, MessagePayload } from "$lib/game";
+import { DEFAULT_DRAW_COLOR, DEFAULT_ERASER_WIDTH, DEFAULT_LINE_WIDTH } from "$lib/board";
+import type { Utility } from "./utility";
 
-export type Message = {
-    name: string;
-    message: string;
-}
+export const game = writable<Game | undefined>();
 
-export type Player = {
-    name: string;
-    score: number;
-}
+export const player = writable("");
+export const state = writable<State>("waiting");
+export const owner = writable("");
+export const currentPlayer = writable("");
 
+export const players = writable<Player[]>([]);
+export const guesses = writable<MessagePayload[]>([]);
+export const chat = writable<MessagePayload[]>([]);
 
-export const DEFAULT_DRAW_COLOR = "#000000";
-export const DEFAULT_LINE_WIDTH = 4;
-export const DEFAULT_ERASER_WIDTH = 15;
+export const words = writable<string[]>([]);
+export const word = writable("");
+export const answered = writable(false);
 
-export const boardUtility = writable<BoardUtility>();
-
+export const utility = writable<Utility | undefined>();
 export const boardColor = writable(DEFAULT_DRAW_COLOR);
 export const pencilWidth = writable(DEFAULT_LINE_WIDTH);
 export const eraserWidth = writable(DEFAULT_ERASER_WIDTH);
-
-export const players = writable<Player[]>([]);
-export const guesses = writable<Message[]>([]);
-export const messages = writable<Message[]>([]);

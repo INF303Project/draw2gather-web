@@ -2,6 +2,7 @@
     import type { PageData } from "./$types";
     import QuickPlay from "$lib/components/QuickPlay.svelte";
     import ProviderSign from "$lib/components/ProviderSign.svelte";
+    import UserPlay from "$lib/components/UserPlay.svelte";
 
     export let data: PageData;
 </script>
@@ -12,12 +13,16 @@
     </div>
 
     <div id="cards" class="row">
-        <div class="col-md-6">
-            <QuickPlay username={data.name} />
-        </div>
-        <div class="col-md-6">
-            <ProviderSign />
-        </div>
+        {#if data.user.user_id}
+            <UserPlay username={data.user.name} />
+        {:else}
+            <div class="col-md-6">
+                <QuickPlay name={data.user.name} />
+            </div>
+            <div class="col-md-6">
+                <ProviderSign />
+            </div>
+        {/if}
     </div>
 
     <div class="row">
@@ -38,5 +43,6 @@
 
     #cards {
         row-gap: 2rem;
+        min-height: 50%;
     }
 </style>

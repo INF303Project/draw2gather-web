@@ -1,16 +1,22 @@
 <script lang="ts">
+    import type { CreateGameReq, CreateGameResp } from "$lib/dto";
+    import { API_URL } from "$lib";
     import { goto } from "$app/navigation";
     import { createEventDispatcher } from "svelte";
+    import type { WordSet } from "$lib/models";
+
+    export let word_sets: WordSet[] | undefined;
 
     const dispatch = createEventDispatcher();
 
     let language: string;
+    let word_set: string;
     let maxPlayers: number;
     let targetScore: number;
     let visibility: boolean;
 
     const createGame = async () => {
-        const create = await fetch("http://192.168.0.10:8080/games", {
+        const resp = await fetch(`http://${API_URL}:8080/games`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -20,17 +26,23 @@
                 target_score: targetScore,
                 language,
                 visibility,
-            }),
+                word_set,
+            } as CreateGameReq),
             credentials: "include",
         });
-        const data = await create.json();
+        const data = (await resp.json()) as CreateGameResp;
         const gameId = data.id;
         await goto(`/${gameId}`);
     };
 </script>
 
-<div id="form">
-    <form on:submit={createGame}>
+<div id="create-game">
+    <form on:submit|preventDefault={createGame}>
+        <div class="row text-center">
+            <p style="font-weight: bold;">Create Game</p>
+            <hr />
+        </div>
+
         <div class="row">
             <label>
                 Language
@@ -44,11 +56,31 @@
 
         <div class="row">
             <label>
+                Word Set
+                <select
+                    disabled={word_sets == undefined}
+                    class="form-select"
+                    bind:value={word_set}
+                >
+                    <option value="default" selected>Default</option>
+                    {#if word_sets}
+                        {#each word_sets as set}
+                            {#if set.language == language}
+                                <option value={set.name}>{set.name}</option>
+                            {/if}
+                        {/each}
+                    {/if}
+                </select>
+            </label>
+        </div>
+
+        <div class="row">
+            <label>
                 Max Players
                 <select class="form-select" bind:value={maxPlayers}>
                     <option value={5}>5</option>
+                    <option value={8}>8</option>
                     <option value={10}>10</option>
-                    <option value={15}>15</option>
                 </select>
             </label>
         </div>
@@ -57,9 +89,9 @@
             <label>
                 Target Score
                 <select class="form-select" bind:value={targetScore}>
-                    <option value={5}>5</option>
-                    <option value={10}>10</option>
-                    <option value={15}>15</option>
+                    <option value={50}>50</option>
+                    <option value={75}>75</option>
+                    <option value={100}>100</option>
                 </select></label
             >
         </div>
@@ -86,6 +118,21 @@
                     on:click={(_) => dispatch("back")}>Back</button
                 >
             </div>
+
+            {#if word_sets}
+                <div class="col text-center">
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        on:click={(_) => {
+                            dispatch("create-word-set");
+                        }}
+                    >
+                        Create Word Set
+                    </button>
+                </div>
+            {/if}
+
             <div class="col text-center">
                 <button type="submit" class="btn btn-primary">Play</button>
             </div>
@@ -94,7 +141,7 @@
 </div>
 
 <style>
-    #form {
+    #create-game {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;

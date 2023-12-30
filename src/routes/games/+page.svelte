@@ -1,9 +1,15 @@
 <script lang="ts">
     import type { PageData } from "./$types";
+    import type { GetGameResp } from "$lib/dto";
     import CreateGame from "$lib/components/CreateGame.svelte";
     import Game from "$lib/components/GameCard.svelte";
+    import { API_URL } from "$lib";
+    import CreateWordSet from "$lib/components/CreateWordSet.svelte";
 
     export let data: PageData;
+    let user = data.user;
+    let games = data.games;
+    let word_sets = data.word_sets;
 
     const createGame = () => {
         const games = document.getElementById("games");
@@ -12,23 +18,30 @@
         createGame?.classList.toggle("d-none");
     };
 
+    const createWordSet = () => {
+        const createGame = document.getElementById("create-game");
+        const createSet = document.getElementById("create-set");
+        createGame?.classList.toggle("d-none");
+        createSet?.classList.toggle("d-none");
+    };
+
     const filterLang = async (e: Event) => {
         const lang = (e.target as HTMLSelectElement).value;
         if (lang === "ALL") {
-            const res = await fetch("http://192.168.0.10:8080/games", {
+            const res = await fetch(`http://${API_URL}:8080/games`, {
                 credentials: "include",
             });
-            const newData = await res.json();
-            data = newData;
+            const newData = (await res.json()) as GetGameResp;
+            games = newData;
         } else {
             const res = await fetch(
-                `http://192.168.0.10:8080/games?lang=${lang}`,
+                `http://${API_URL}:8080/games?lang=${lang}`,
                 {
                     credentials: "include",
                 },
             );
-            const newData = await res.json();
-            data = newData;
+            const newData = (await res.json()) as GetGameResp;
+            games = newData;
         }
     };
 </script>
@@ -54,11 +67,11 @@
         </div>
 
         <div id="game-list">
-            {#each data.games as game}
+            {#each games.games as game}
                 <Game
                     gameId={game.id}
                     lang={game.language}
-                    currentPlayers={game.current_players}
+                    currentPlayers={game.current_players.length}
                     maxPlayers={game.max_players}
                 />
             {/each}
@@ -72,7 +85,15 @@
     </div>
 
     <div id="create-game" class="d-none">
-        <CreateGame on:back={createGame} />
+        <CreateGame
+            word_sets={word_sets?.word_sets}
+            on:back={createGame}
+            on:create-word-set={createWordSet}
+        />
+    </div>
+
+    <div id="create-set" class="d-none h-100">
+        <CreateWordSet on:back={createWordSet} />
     </div>
 </div>
 
@@ -123,5 +144,9 @@
         padding: 1rem;
 
         overflow-y: auto;
+    }
+
+    #create-set {
+        overflow: hidden;
     }
 </style>

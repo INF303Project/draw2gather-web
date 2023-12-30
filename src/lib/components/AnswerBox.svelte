@@ -1,17 +1,19 @@
 <script lang="ts">
-    import { boardUtility, guesses } from "$lib/stores";
-    import { Action } from "$lib/board_utils";
+    import {
+        answered,
+        currentPlayer,
+        guesses,
+        player,
+        state,
+    } from "$lib/stores";
     import swap from "$lib/assets/swap.svg";
     import Message from "./Message.svelte";
     import { createEventDispatcher } from "svelte";
+    import { Action, publishMessage } from "$lib/game";
 
     let message: string = "";
     const sendMessage = () => {
-        $boardUtility.sendMessage(Action.Guess, { value: message });
-        guesses.update((messages) => [
-            ...messages,
-            { name: "You", message: message },
-        ]);
+        publishMessage(Action.Guess, message);
         message = "";
     };
 
@@ -35,26 +37,33 @@
     <div id="messages" class="row">
         <div>
             {#each $guesses as message}
-                <Message user={message.name} message={message.message} />
+                <Message user={message.player} message={message.message} />
             {/each}
         </div>
     </div>
-    <div class="row">
-        <form class="row" on:submit={sendMessage}>
-            <div class="col-9">
-                <input
-                    class="form-control"
-                    type="text"
-                    placeholder="Answer..."
-                    required
-                    bind:value={message}
-                />
-            </div>
-            <div class="col-3">
-                <button class="btn btn-secondary">Send</button>
-            </div>
-        </form>
-    </div>
+    <form class="row" on:submit={sendMessage}>
+        <div class="col-8">
+            <input
+                disabled={$state != "drawing" ||
+                    $player == $currentPlayer ||
+                    $answered}
+                class="form-control"
+                type="text"
+                placeholder="Answer..."
+                minlength={1}
+                required
+                bind:value={message}
+            />
+        </div>
+        <div class="col-4">
+            <button
+                class="btn btn-secondary w-100"
+                disabled={$state != "drawing" ||
+                    $player == $currentPlayer ||
+                    $answered}>Send</button
+            >
+        </div>
+    </form>
 </div>
 
 <style>
@@ -66,7 +75,6 @@
         border: 2px solid;
         border-radius: 0.5rem;
 
-        /* max-height: 100%; */
         width: 100%;
         height: 100%;
 

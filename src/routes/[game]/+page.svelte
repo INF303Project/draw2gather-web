@@ -1,10 +1,14 @@
 <script lang="ts">
     import AnswerBox from "$lib/components/AnswerBox.svelte";
-    import Board from "$lib/components/Board.svelte";
     import ChatBox from "$lib/components/ChatBox.svelte";
+    import GameScreen from "$lib/components/GameScreen.svelte";
     import HorTools from "$lib/components/HorTools.svelte";
     import PlayerList from "$lib/components/PlayerList.svelte";
     import Tools from "$lib/components/Tools.svelte";
+    import { Game } from "$lib/game";
+    import { currentPlayer, game, player, state } from "$lib/stores";
+
+    $game = new Game();
 
     const swapChat = () => {
         const answers = document.getElementById("answers");
@@ -28,20 +32,24 @@
             <div class="col h-100">
                 <PlayerList />
             </div>
-            <div class="col h-100" style="overflow: auto;">
-                <Tools />
-            </div>
+            {#if $state == "drawing" && $player == $currentPlayer}
+                <div class="col h-100" style="overflow: auto;">
+                    <Tools />
+                </div>
+            {/if}
         </div>
         <div
             class="d-flex flex-column col-12 col-md-9 h-100"
             style="row-gap: 1rem;"
         >
             <div class="row">
-                <Board />
+                <GameScreen />
             </div>
-            <div class="row d-flex d-md-none d-none">
-                <HorTools />
-            </div>
+            {#if $state == "drawing" && $player == $currentPlayer}
+                <div class="row d-flex d-md-none">
+                    <HorTools />
+                </div>
+            {/if}
             <div
                 class="row justify-content-center h-100"
                 style="overflow: hidden;"

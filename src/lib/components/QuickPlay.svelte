@@ -1,26 +1,27 @@
 <script lang="ts">
+    import type { CreateUserReq } from "$lib/dto";
+    import { API_URL } from "$lib";
     import { goto } from "$app/navigation";
 
-    export let username: string;
+    export let name: string;
 
     const gotoGames = async () => {
-        try {
-            await fetch("http://192.168.0.10:8080/user", {
-                method: "POST",
-                body: JSON.stringify({
-                    name: username,
-                }),
-                credentials: "include",
-            });
-            await goto("/games");
-        } catch (err) {
-            console.error(err);
-        }
+        await fetch(`http://${API_URL}:8080/user`, {
+            method: "POST",
+            body: JSON.stringify({
+                name: name,
+            } as CreateUserReq),
+            credentials: "include",
+        });
+        await goto("/games");
     };
 </script>
 
 <div id="anonymous">
-    <h4>Quick Play</h4>
+    <div class="text-center">
+        <h4>Quick Play</h4>
+        <span>Have fun quickly!</span>
+    </div>
 
     <div id="anon-form">
         <label>
@@ -30,19 +31,17 @@
                 type="text"
                 placeholder="Enter your username"
                 minlength="1"
-                bind:value={username}
+                bind:value={name}
             />
         </label>
+        <button class="btn btn-primary" on:click={gotoGames}>Play</button>
     </div>
-
-    <button class="btn btn-primary" on:click={gotoGames}>Play</button>
 </div>
 
 <style>
     #anonymous {
         display: flex;
         flex-direction: column;
-        justify-content: center;
         align-items: center;
 
         border: 2px solid;
@@ -55,7 +54,15 @@
     }
 
     #anon-form {
-        margin-top: 1rem;
-        margin-bottom: 1rem;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 1rem;
+
+        height: 100%;
+        width: 100%;
+
+        padding: 1rem;
     }
 </style>

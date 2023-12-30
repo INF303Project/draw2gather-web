@@ -1,18 +1,22 @@
-import { redirect } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
+import type { JoinGameReq } from '$lib/dto';
+import { API_URL } from '$lib';
+import { redirect } from '@sveltejs/kit';
 
-export const load = (async ({ fetch, params }) => {
+export const load = (async ({ parent, params, fetch }) => {
+    await parent();
+
     let joined: boolean = false;
 
     try {
-        const resp = await fetch("http://192.168.0.10:8080/game", {
+        const resp = await fetch(`http://${API_URL}:8080/game`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
                 game_id: params.game,
-            }),
+            } as JoinGameReq),
             credentials: "include",
         });
         if (resp.ok) {
@@ -20,11 +24,9 @@ export const load = (async ({ fetch, params }) => {
         }
     } catch (error) {
         console.error(error);
-        joined = false;
     }
 
     if (!joined) {
-        console.log("redirecting");
         throw redirect(301, "/games");
     }
 }) satisfies PageLoad;

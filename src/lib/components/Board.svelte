@@ -1,34 +1,40 @@
 <script lang="ts">
-    import { FreeDraw } from "$lib/board_utils";
-    import { boardUtility } from "$lib/stores";
+    import {
+        Board,
+        DEFAULT_DRAW_COLOR,
+        DEFAULT_ERASER_WIDTH,
+        DEFAULT_LINE_WIDTH,
+    } from "$lib/board";
+    import { utility } from "$lib/stores";
     import { onMount } from "svelte";
 
     onMount(() => {
-        boardUtility.set(FreeDraw.getInstance());
+        const board = Board.getInstance();
+        board.changeColor(DEFAULT_DRAW_COLOR);
+        board.changeLineWidth(DEFAULT_LINE_WIDTH);
+        board.changeEraserWidth(DEFAULT_ERASER_WIDTH);
     });
 </script>
 
-<div id="board">
-    <div id="drawing">
-        <canvas
-            id="front"
-            width="1024"
-            height="576"
-            on:mousedown={$boardUtility.onMouseDown}
-            on:mousemove={$boardUtility.onMouseMove}
-            on:mouseup={$boardUtility.onMouseUp}
-            on:mouseleave={$boardUtility.onMouseLeave}
-            on:touchstart={$boardUtility.onTouchStart}
-            on:touchmove={$boardUtility.onTouchMove}
-            on:touchend={$boardUtility.onTouchEnd}
-            on:touchcancel={$boardUtility.onTouchCancel}
-        />
-        <canvas id="back" width="1024" height="576" />
-    </div>
+<div id="board" class="d-none">
+    <canvas
+        id="front"
+        width="1024"
+        height="576"
+        on:mousedown={$utility?.onMouseDown}
+        on:mousemove={$utility?.onMouseMove}
+        on:mouseup={$utility?.onMouseUp}
+        on:mouseleave={$utility?.onMouseLeave}
+        on:touchstart={$utility?.onTouchStart}
+        on:touchmove={$utility?.onTouchMove}
+        on:touchend={$utility?.onTouchEnd}
+        on:touchcancel={$utility?.onTouchCancel}
+    />
+    <canvas id="back" width="1024" height="576" />
 </div>
 
 <style>
-    #drawing {
+    #board {
         position: relative;
         width: 100%;
     }
@@ -44,7 +50,7 @@
         z-index: -1;
     }
 
-    #drawing canvas {
+    #board canvas {
         border: 2px solid;
         cursor: crosshair;
 

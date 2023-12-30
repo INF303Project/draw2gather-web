@@ -1,17 +1,13 @@
 <script lang="ts">
-    import Message from "./Message.svelte";
-    import { boardUtility, messages } from "$lib/stores";
-    import { Action } from "$lib/board_utils";
     import swap from "$lib/assets/swap.svg";
     import { createEventDispatcher } from "svelte";
+    import { Action, publishMessage } from "$lib/game";
+    import { chat } from "$lib/stores";
+    import Message from "./Message.svelte";
 
     let message: string = "";
     const sendMessage = () => {
-        $boardUtility.sendMessage(Action.Chat, { value: message });
-        messages.update((messages) => [
-            ...messages,
-            { name: "You", message: message },
-        ]);
+        publishMessage(Action.Chat, message);
         message = "";
     };
 
@@ -34,27 +30,26 @@
     </div>
     <div id="messages" class="row">
         <div>
-            {#each $messages as message}
-                <Message user={message.name} message={message.message} />
+            {#each $chat as message}
+                <Message user={message.player} message={message.message} />
             {/each}
         </div>
     </div>
-    <div class="row">
-        <form class="row" on:submit={sendMessage}>
-            <div class="col-9">
-                <input
-                    class="form-control"
-                    type="text"
-                    placeholder="Message..."
-                    required
-                    bind:value={message}
-                />
-            </div>
-            <div class="col-3">
-                <button class="btn btn-secondary">Send</button>
-            </div>
-        </form>
-    </div>
+    <form class="row" on:submit={sendMessage}>
+        <div class="col-8">
+            <input
+                class="form-control"
+                type="text"
+                placeholder="Message..."
+                minlength={1}
+                required
+                bind:value={message}
+            />
+        </div>
+        <div class="col-4">
+            <button class="btn btn-secondary w-100">Send</button>
+        </div>
+    </form>
 </div>
 
 <style>

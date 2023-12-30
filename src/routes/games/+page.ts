@@ -1,14 +1,25 @@
 import type { PageLoad } from './$types';
+import type { GetGameResp, GetWordSetsResp } from '$lib/dto';
+import { API_URL } from '$lib';
 
-export const load = (async ({ fetch }) => {
-    const resp = await fetch("http://192.168.0.10:8080/games", {
+export const load = (async ({ parent, fetch }) => {
+    const data = await parent();
+
+    let resp = await fetch(`http://${API_URL}:8080/games`, {
         credentials: "include",
     });
-    const data = await resp.json();
+    const games = await resp.json() as GetGameResp;
+
+    let word_sets: GetWordSetsResp | undefined;
+    if (data.user.user_id) {
+        resp = await fetch(`http://${API_URL}:8080/set`, {
+            credentials: "include",
+        });
+        word_sets = await resp.json() as GetWordSetsResp;
+    }
+
     return {
-        total: data.total,
-        limit: data.limit,
-        offset: data.offset,
-        games: data.games,
+        games,
+        word_sets,
     };
 }) satisfies PageLoad;
