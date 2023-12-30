@@ -29,7 +29,10 @@
 </script>
 
 <div id="screen">
-    <div class="d-flex w-100 justify-content-between">
+    <div
+        class="d-flex w-100 justify-content-between"
+        style="border-bottom: 1px solid;"
+    >
         <div class="d-flex justify-content-center w-100">
             {#if $state == "drawing" && $player == $currentPlayer}
                 <span>{$word}</span>
@@ -84,8 +87,12 @@
         border: 2px solid;
         border-radius: 0.5rem;
 
+        padding-left: 0px;
+        padding-right: 0px;
+
         width: 100%;
         aspect-ratio: 16/9;
+        max-height: 100%;
     }
 
     #game {

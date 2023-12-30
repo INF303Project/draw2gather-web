@@ -8,7 +8,7 @@
     const googleSignIn = async () => {
         const user = await signInWithPopup(auth, googleProvider);
         const token = await user.user.getIdToken();
-        await fetch(`http://${API_URL}:8080/login`, {
+        await fetch(`http://${API_URL}/login`, {
             method: "POST",
             credentials: "include",
             headers: {

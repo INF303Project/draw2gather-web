@@ -6,7 +6,7 @@
     export let name: string;
 
     const gotoGames = async () => {
-        await fetch(`http://${API_URL}:8080/user`, {
+        await fetch(`http://${API_URL}/user`, {
             method: "POST",
             body: JSON.stringify({
                 name: name,

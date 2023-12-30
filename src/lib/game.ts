@@ -106,9 +106,23 @@ export class Game {
     private players: Map<string, Player> = new Map<string, Player>();
     private guesses: MessagePayload[] = [];
     private chat: MessagePayload[] = [];
-    private readonly socket: WebSocket = new WebSocket(`ws://${API_URL}:8080/game`);
+    private readonly socket: WebSocket = new WebSocket(`ws://${API_URL}/game`);
 
     constructor() {
+        player.set("");
+        state.set("waiting");
+        owner.set("");
+        currentPlayer.set("");
+        players.set([]);
+        guesses.set([]);
+        chat.set([]);
+        words.set([]);
+        word.set("");
+        answered.set(false);
+        utility.set(undefined);
+        boardColor.set(DEFAULT_DRAW_COLOR);
+        pencilWidth.set(DEFAULT_LINE_WIDTH);
+        eraserWidth.set(DEFAULT_ERASER_WIDTH);
         messageQueue.subscribe(this.queueHandler);
         this.socket.onmessage = this.messageHandler;
     }
@@ -238,47 +252,34 @@ export class Game {
                 break;
             }
             case Action.Waiting:
-                Board.getInstance().hide();
-                utility.set(undefined);
-                this.setState("waiting");
+                this.reset();
                 this.setCurrentPlayer("");
                 this.clearScores();
-                this.clearGuesses();
-                words.set([]);
-                word.set("");
-                answered.set(false);
+                this.setState("waiting");
                 break;
             case Action.Starting: {
-                Board.getInstance().hide();
-                utility.set(undefined);
+                this.reset();
                 const player = payload.value as string;
-                this.setState("starting");
                 this.setCurrentPlayer(player);
-                this.clearGuesses();
-                boardColor.set(DEFAULT_DRAW_COLOR);
-                pencilWidth.set(DEFAULT_LINE_WIDTH);
-                eraserWidth.set(DEFAULT_ERASER_WIDTH);
-                words.set([]);
-                word.set("");
-                answered.set(false);
+                this.setState("starting");
                 break;
             }
             case Action.Picking:
                 this.setState("picking");
                 break;
-            case Action.Drawing:
-                this.setState("drawing");
+            case Action.Drawing: {
+                const board = Board.getInstance();
+                board.clearBack();
+                board.show();
                 if (this.player == this.currentPlayer) {
                     utility.set(new FreeDraw());
                 }
-                Board.getInstance().clearBack();
-                Board.getInstance().show();
+                this.setState("drawing");
                 break;
+            }
             case Action.Ending: {
-                // FIXME
-                Board.getInstance().hide();
+                this.reset();
                 this.setState("ending");
-                this.clearGuesses();
                 break;
             }
             default:
@@ -292,6 +293,19 @@ export class Game {
             action: action,
             payload: JSON.stringify({ value }),
         }));
+    }
+
+    private reset = (): void => {
+        const board = Board.getInstance();
+        board.hide();
+        board.changeColor(DEFAULT_DRAW_COLOR);
+        board.changeLineWidth(DEFAULT_LINE_WIDTH);
+        board.changeEraserWidth(DEFAULT_ERASER_WIDTH);
+        utility.set(undefined);
+        words.set([]);
+        word.set("");
+        answered.set(false);
+        this.clearGuesses();
     }
 
     private setPlayer = (id: string): void => {

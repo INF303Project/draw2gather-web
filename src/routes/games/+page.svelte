@@ -8,8 +8,8 @@
 
     export let data: PageData;
     let user = data.user;
-    let games = data.games;
-    let word_sets = data.word_sets;
+    $: games = data.games;
+    $: word_sets = data.word_sets;
 
     const createGame = () => {
         const games = document.getElementById("games");
@@ -28,14 +28,14 @@
     const filterLang = async (e: Event) => {
         const lang = (e.target as HTMLSelectElement).value;
         if (lang === "ALL") {
-            const res = await fetch(`http://${API_URL}:8080/games`, {
+            const res = await fetch(`http://${API_URL}/games`, {
                 credentials: "include",
             });
             const newData = (await res.json()) as GetGameResp;
             games = newData;
         } else {
             const res = await fetch(
-                `http://${API_URL}:8080/games?lang=${lang}`,
+                `http://${API_URL}/games?lang=${lang}`,
                 {
                     credentials: "include",
                 },

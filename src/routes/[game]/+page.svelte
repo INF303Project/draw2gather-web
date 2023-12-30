@@ -42,7 +42,10 @@
             class="d-flex flex-column col-12 col-md-9 h-100"
             style="row-gap: 1rem;"
         >
-            <div class="row">
+            <div
+                class="row"
+                style="height: 100%; max-height: 75%; margin-left: 0px; margin-right: 0px;"
+            >
                 <GameScreen />
             </div>
             {#if $state == "drawing" && $player == $currentPlayer}

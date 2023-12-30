@@ -1,14 +1,50 @@
 <script lang="ts">
+    import { invalidateAll } from "$app/navigation";
+    import { API_URL } from "$lib";
     import { createEventDispatcher } from "svelte";
 
     let name: string;
     let language: string;
     let word: string;
-    let words: string[];
+    let words: string[] = [];
+    let wordSet = new Set<string>();
 
     const dispatch = createEventDispatcher();
 
-    const createWordSet = async () => {};
+    const createWordSet = async () => {
+        if (words.length < 50) {
+            alert("Word set must have at least 50 words.");
+        } else {
+            try {
+                const res = await fetch(`http://${API_URL}/set`, {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        name,
+                        language,
+                        words,
+                    }),
+                });
+                if (!res.ok) {
+                    alert(await res.text());
+                } else {
+                    await invalidateAll();
+                    dispatch("back");
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    };
+
+    const addWord = () => {
+        wordSet.add(word);
+        word = "";
+        words = Array.from(wordSet.values());
+    };
 </script>
 
 <div id="create-word-set">
@@ -24,6 +60,7 @@
                 class="form-control"
                 type="text"
                 placeholder="Name"
+                required
                 bind:value={name}
             />
         </label>
@@ -32,7 +69,7 @@
     <div class="row">
         <label>
             Language
-            <select class="form-select" bind:value={language}>
+            <select class="form-select" bind:value={language} required>
                 <option value="TR">Turkish</option>
                 <option value="EN">English</option>
                 <option value="DE">German</option>
@@ -44,14 +81,30 @@
         <span>Words</span>
     </div>
 
-    <div id="words"></div>
+    <div id="words">
+        {#each words as w}
+            <div class="word">
+                <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    on:click={() => {
+                        wordSet.delete(w);
+                        words = Array.from(wordSet.values());
+                    }}
+                    >x
+                </button>
+                <span>{w}</span>
+            </div>
+        {/each}
+    </div>
 
-    <form class="row">
+    <form class="row" on:submit|preventDefault={addWord}>
         <div class="col-8">
             <input
                 class="form-control"
                 type="text"
                 placeholder="Word"
+                required
                 bind:value={word}
             />
         </div>
@@ -70,8 +123,10 @@
         </div>
 
         <div class="col text-center">
-            <button type="submit" class="btn btn-primary text-center"
-                >Create</button
+            <button
+                type="submit"
+                class="btn btn-primary text-center"
+                on:click={createWordSet}>Create</button
             >
         </div>
     </div>
@@ -94,12 +149,27 @@
 
     #words {
         display: flex;
-        flex-direction: column;
+        flex-flow: column wrap;
+        justify-content: flex-start;
+        gap: 0.5rem;
+
+        border: 1px solid;
+        border-radius: 0.25rem;
+        padding: 0.5rem;
+
+        height: 100%;
+        overflow-y: auto;
+    }
+
+    .word {
+        flex-direction: row;
+        gap: 0.5rem;
 
         border: 1px solid;
         border-radius: 0.25rem;
 
-        height: 100%;
-        overflow-y: auto;
+        /* height: fit-content; */
+        /* width: fit-content; */
+        padding: 0.25rem;
     }
 </style>

@@ -37,6 +37,7 @@
     #board {
         position: relative;
         width: 100%;
+        height: 100%;
     }
 
     #front {
@@ -51,10 +52,8 @@
     }
 
     #board canvas {
-        border: 2px solid;
         cursor: crosshair;
-
-        aspect-ratio: 16/9;
         width: 100%;
+        height: 100%;
     }
 </style>

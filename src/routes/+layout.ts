@@ -6,7 +6,7 @@ import type { GetUserResp } from '$lib/dto';
 import { API_URL } from '$lib';
 
 export const load = (async ({ fetch }) => {
-    const resp = await fetch(`http://${API_URL}:8080/user`, {
+    const resp = await fetch(`http://${API_URL}/user`, {
         credentials: "include",
     });
     const user = await resp.json() as GetUserResp;

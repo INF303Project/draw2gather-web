@@ -3,7 +3,7 @@ import { GoogleAuthProvider, getAuth, browserSessionPersistence } from "firebase
 
 const firebaseConfig = {
     apiKey: "AIzaSyAImgHqxtqTzXj5VnLnn5O905jkGGScRMQ",
-    authDomain: "draw2gather.firebaseapp.com",
+    authDomain: "draw2gather.online",
     projectId: "draw2gather",
     storageBucket: "draw2gather.appspot.com",
     messagingSenderId: "593468951085",

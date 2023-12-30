@@ -7,7 +7,7 @@
 
     const gotoGames = async () => {
         try {
-            await fetch(`http://${API_URL}:8080/user`, {
+            await fetch(`http://${API_URL}/user`, {
                 method: "POST",
                 body: JSON.stringify({
                     name: username,
@@ -21,7 +21,7 @@
     };
 
     const signOut = async () => {
-        await fetch(`http://${API_URL}:8080/logout`, {
+        await fetch(`http://${API_URL}/logout`, {
             method: "POST",
             credentials: "include",
         });
