@@ -140,13 +140,25 @@ export class Game {
 
         switch (message.action) {
             case Action.Greet: {
+                const board = Board.getInstance();
                 const game = payload.value as GamePayload;
                 this.setPlayer(game.player);
                 this.setState(game.state);
                 this.setPlayers(new Map(Object.entries(game.players)));
                 this.setOwner(game.owner);
                 this.setCurrentPlayer(game.currentPlayer);
-                // handle commands
+                game.commands.forEach((msg) => {
+                    const payload = msg.payload ? JSON.parse(msg.payload) as Payload : {} as Payload;
+                    if (msg.action == Action.Guess) {
+                        console.log(payload.value);
+                        this.addGuess(payload.value);
+                    } else {
+                        this.handleBoardAction(msg.action, payload.value);
+                    }
+                })
+                if (game.state == "drawing") {
+                    board.show();
+                }
                 break;
             }
             case Action.Join: {
@@ -177,60 +189,19 @@ export class Game {
                 words.set(picks);
                 break;
             }
-            case Action.FreeDraw: {
-                const points = payload.value as number[];
-                Board.getInstance().freeDrawBuffered(points);
+            case Action.FreeDraw:
+            case Action.Erase:
+            case Action.LineDraw:
+            case Action.RectDraw:
+            case Action.RectFill:
+            case Action.CircleDraw:
+            case Action.CircleFill:
+            case Action.ChangeColor:
+            case Action.ChangePencilSize:
+            case Action.ChangeEraserSize:
+            case Action.ClearBoard:
+                this.handleBoardAction(message.action, payload.value);
                 break;
-            }
-            case Action.Erase: {
-                const points = payload.value as number[];
-                Board.getInstance().eraseBuffered(points);
-                break;
-            }
-            case Action.LineDraw: {
-                const points = payload.value as PointsPayload;
-                Board.getInstance().drawLineBack(points.start, points.end);
-                break;
-            }
-            case Action.RectDraw: {
-                const points = payload.value as PointsPayload;
-                Board.getInstance().drawRectBack(points.start, points.end);
-                break;
-            }
-            case Action.RectFill: {
-                const points = payload.value as PointsPayload;
-                Board.getInstance().fillRectBack(points.start, points.end);
-                break;
-            }
-            case Action.CircleDraw: {
-                const points = payload.value as PointsPayload;
-                Board.getInstance().drawCircleBack(points.start, points.end);
-                break;
-            }
-            case Action.CircleFill: {
-                const points = payload.value as PointsPayload;
-                Board.getInstance().fillCircleBack(points.start, points.end);
-                break;
-            }
-            case Action.ChangeColor: {
-                const color = payload.value as string;
-                Board.getInstance().changeColor(color);
-                break;
-            }
-            case Action.ChangePencilSize: {
-                const size = payload.value as number;
-                Board.getInstance().changeLineWidth(size);
-                break;
-            }
-            case Action.ChangeEraserSize: {
-                const size = payload.value as number;
-                Board.getInstance().changeEraserWidth(size);
-                break;
-            }
-            case Action.ClearBoard: {
-                Board.getInstance().clearBack();
-                break;
-            }
             case Action.Guess: {
                 const message = payload.value as MessagePayload;
                 this.addGuess(message);
@@ -378,27 +349,71 @@ export class Game {
         players.set(Array.from(this.players.values()));
     }
 
+    private handleBoardAction = (action: Action, value: any) => {
+        const board = Board.getInstance();
+        switch (action) {
+            case Action.FreeDraw:
+                board.freeDrawBuffered(value);
+                break;
+            case Action.Erase:
+                board.eraseBuffered(value);
+                break;
+            case Action.LineDraw:
+                board.drawLineBack(value.start, value.end);
+                break;
+            case Action.RectDraw:
+                board.drawRectBack(value.start, value.end);
+                break;
+            case Action.RectFill:
+                board.fillRectBack(value.start, value.end);
+                break;
+            case Action.CircleDraw:
+                board.drawCircleBack(value.start, value.end);
+                break;
+            case Action.CircleFill:
+                board.fillCircleBack(value.start, value.end);
+                break;
+            case Action.ChangeColor:
+                board.changeColor(value);
+                break;
+            case Action.ChangePencilSize:
+                board.changeLineWidth(value);
+                break;
+            case Action.ChangeEraserSize:
+                board.changeEraserWidth(value);
+                break;
+            case Action.ClearBoard:
+                board.clearBack();
+                break;
+        }
+    }
+
     public clearBoard = () => {
-        Board.getInstance().clearBack();
+        const board = Board.getInstance();
+        board.clearBack();
         this.sendMessage(Action.ClearBoard);
     }
 
     public changeColor = (color: string): void => {
-        Board.getInstance().changeColor(color);
+        const board = Board.getInstance();
+        board.changeColor(color);
         this.sendMessage(Action.ChangeColor, color);
     }
 
     public changeLineWidth = (width: number): void => {
-        Board.getInstance().changeLineWidth(width);
+        const board = Board.getInstance();
+        board.changeLineWidth(width);
         this.sendMessage(Action.ChangePencilSize, width);
     }
 
     public changeEraserWidth = (width: number): void => {
-        Board.getInstance().changeEraserWidth(width);
+        const board = Board.getInstance();
+        board.changeEraserWidth(width);
         this.sendMessage(Action.ChangeEraserSize, width);
     }
 
     public saveImage = (): void => {
-        Board.getInstance().saveImage();
+        const board = Board.getInstance();
+        board.saveImage();
     }
 }

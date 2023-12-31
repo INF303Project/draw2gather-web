@@ -10,11 +10,12 @@
     import Board from "./Board.svelte";
     import quit from "$lib/assets/quit.svg";
     import { Action, publishMessage } from "$lib/game";
-    import { goto } from "$app/navigation";
+    import { goto, invalidateAll } from "$app/navigation";
 
-    const quitGame = () => {
+    const quitGame = async () => {
         publishMessage(Action.Quit);
-        goto("/");
+        await goto("/");
+        await invalidateAll();
     };
 
     const startGame = () => {
