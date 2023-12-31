@@ -44,7 +44,7 @@
         >
             <div
                 class="row"
-                style="height: 100%; max-height: 75%; margin-left: 0px; margin-right: 0px;"
+                style="max-height: calc(100% - 230px); margin-left: 0px; margin-right: 0px;"
             >
                 <GameScreen />
             </div>

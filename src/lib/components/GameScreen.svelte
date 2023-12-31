@@ -91,7 +91,7 @@
         padding-right: 0px;
 
         width: 100%;
-        aspect-ratio: 16/9;
+        height: 100%;
         max-height: 100%;
     }
 
@@ -103,7 +103,9 @@
         row-gap: 1rem;
 
         width: 100%;
-        height: 100%;
+        aspect-ratio: 16/9;
+        max-height: 100%;
+        overflow: hidden;
     }
 
     .image-button {
