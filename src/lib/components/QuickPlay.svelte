@@ -2,19 +2,23 @@
     import type { CreateUserReq } from "$lib/dto";
     import { API_URL } from "$lib";
     import { goto, invalidateAll } from "$app/navigation";
+    import { loading } from "$lib/stores";
 
     export let name: string;
+    let newName = name;
 
     const gotoGames = async () => {
+        $loading = true;
         await fetch(`https://${API_URL}/user`, {
             method: "POST",
             body: JSON.stringify({
-                name: name,
+                name: newName,
             } as CreateUserReq),
             credentials: "include",
         });
         await invalidateAll();
         await goto("/games");
+        $loading = false;
     };
 </script>
 
@@ -24,7 +28,7 @@
         <span>Have fun quickly!</span>
     </div>
 
-    <div id="anon-form">
+    <form id="anon-form" on:submit={gotoGames}>
         <label>
             Username
             <input
@@ -32,11 +36,11 @@
                 type="text"
                 placeholder="Enter your username"
                 minlength="1"
-                bind:value={name}
+                bind:value={newName}
             />
         </label>
-        <button class="btn btn-primary" on:click={gotoGames}>Play</button>
-    </div>
+        <button class="btn btn-primary">Play</button>
+    </form>
 </div>
 
 <style>

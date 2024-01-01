@@ -14,7 +14,7 @@
 
     <div id="cards" class="row">
         {#if data.user.user_id}
-            <UserPlay username={data.user.name} />
+            <UserPlay name={data.user.name} />
         {:else}
             <div class="col-md-6">
                 <QuickPlay name={data.user.name} />

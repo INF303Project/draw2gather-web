@@ -1,6 +1,7 @@
 <script lang="ts">
     import { invalidateAll } from "$app/navigation";
     import { API_URL } from "$lib";
+    import { loading } from "$lib/stores";
     import { createEventDispatcher } from "svelte";
 
     let name: string;
@@ -15,6 +16,7 @@
         if (words.length < 50) {
             alert("Word set must have at least 50 words.");
         } else {
+            $loading = true;
             const res = await fetch(`https://${API_URL}/set`, {
                 method: "POST",
                 credentials: "include",
@@ -33,13 +35,14 @@
                 await invalidateAll();
                 dispatch("back");
             }
+            $loading = false;
         }
     };
 
     const addWord = () => {
         wordSet.add(word);
         word = "";
-        words = Array.from(wordSet.values());
+        words = Array.from(wordSet.values()).sort();
     };
 </script>
 

@@ -3,11 +3,13 @@
     import { API_URL } from "$lib";
     import google from "$lib/assets/google.svg";
     import { auth, googleProvider } from "$lib/auth";
+    import { loading } from "$lib/stores";
     import { signInWithPopup } from "firebase/auth";
 
     const googleSignIn = async () => {
         const user = await signInWithPopup(auth, googleProvider);
         const token = await user.user.getIdToken();
+        $loading = true;
         await fetch(`https://${API_URL}/login`, {
             method: "POST",
             credentials: "include",
@@ -17,6 +19,7 @@
             },
         });
         await invalidateAll();
+        $loading = false;
     };
 </script>
 

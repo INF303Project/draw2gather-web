@@ -4,6 +4,7 @@
     import { goto } from "$app/navigation";
     import { createEventDispatcher } from "svelte";
     import type { WordSet } from "$lib/models";
+    import { loading } from "$lib/stores";
 
     export let word_sets: WordSet[] | undefined;
 
@@ -16,6 +17,7 @@
     let visibility: boolean;
 
     const createGame = async () => {
+        $loading = true;
         const resp = await fetch(`https://${API_URL}/games`, {
             method: "POST",
             headers: {
@@ -33,6 +35,7 @@
         const data = (await resp.json()) as CreateGameResp;
         const gameId = data.id;
         await goto(`/${gameId}`);
+        $loading = false;
     };
 </script>
 

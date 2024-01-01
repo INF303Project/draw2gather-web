@@ -3,6 +3,7 @@ import type { State, Game, Player, MessagePayload } from "$lib/game";
 import { DEFAULT_DRAW_COLOR, DEFAULT_ERASER_WIDTH, DEFAULT_LINE_WIDTH } from "$lib/board";
 import type { Utility } from "./utility";
 
+export const loading = writable(false);
 export const game = writable<Game | undefined>();
 
 export const player = writable("");

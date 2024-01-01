@@ -5,6 +5,7 @@
     import Game from "$lib/components/GameCard.svelte";
     import { API_URL } from "$lib";
     import CreateWordSet from "$lib/components/CreateWordSet.svelte";
+    import { loading } from "$lib/stores";
 
     export let data: PageData;
     let user = data.user;
@@ -28,20 +29,21 @@
     const filterLang = async (e: Event) => {
         const lang = (e.target as HTMLSelectElement).value;
         if (lang === "ALL") {
+            $loading = true;
             const res = await fetch(`https://${API_URL}/games`, {
                 credentials: "include",
             });
             const newData = (await res.json()) as GetGameResp;
             games = newData;
+            $loading = false;
         } else {
-            const res = await fetch(
-                `https://${API_URL}/games?lang=${lang}`,
-                {
-                    credentials: "include",
-                },
-            );
+            $loading = true;
+            const res = await fetch(`https://${API_URL}/games?lang=${lang}`, {
+                credentials: "include",
+            });
             const newData = (await res.json()) as GetGameResp;
             games = newData;
+            $loading = false;
         }
     };
 </script>

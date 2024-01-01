@@ -1,35 +1,41 @@
 <script lang="ts">
+    import type { CreateUserReq } from "$lib/dto";
     import { goto, invalidateAll } from "$app/navigation";
     import { API_URL } from "$lib";
-    import type { CreateUserReq } from "$lib/dto";
+    import { loading } from "$lib/stores";
 
-    export let username: string;
+    export let name: string;
+    let newName = name;
 
     const gotoGames = async () => {
+        $loading = true;
         await fetch(`https://${API_URL}/user`, {
             method: "POST",
             body: JSON.stringify({
-                name: username,
+                name: newName,
             } as CreateUserReq),
             credentials: "include",
         });
         await invalidateAll();
         await goto("/games");
+        $loading = false;
     };
 
     const signOut = async () => {
+        $loading = true;
         await fetch(`https://${API_URL}/logout`, {
             method: "POST",
             credentials: "include",
         });
         await invalidateAll();
+        $loading = false;
     };
 </script>
 
 <div id="user">
     <h4>Play</h4>
 
-    <div id="user-form">
+    <form id="user-form" on:submit={gotoGames}>
         <label>
             Username
             <input
@@ -37,15 +43,17 @@
                 type="text"
                 placeholder="Enter your username"
                 minlength="1"
-                bind:value={username}
+                bind:value={newName}
             />
         </label>
 
         <div>
-            <button class="btn btn-primary" on:click={gotoGames}>Play</button>
-            <button class="btn btn-primary" on:click={signOut}>Sign Out</button>
+            <button type="submit" class="btn btn-primary">Play</button>
+            <button type="button" class="btn btn-primary" on:click={signOut}
+                >Sign Out</button
+            >
         </div>
-    </div>
+    </form>
 </div>
 
 <style>
