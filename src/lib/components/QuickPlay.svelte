@@ -1,18 +1,19 @@
 <script lang="ts">
     import type { CreateUserReq } from "$lib/dto";
     import { API_URL } from "$lib";
-    import { goto } from "$app/navigation";
+    import { goto, invalidateAll } from "$app/navigation";
 
     export let name: string;
 
     const gotoGames = async () => {
-        await fetch(`http://${API_URL}/user`, {
+        await fetch(`https://${API_URL}/user`, {
             method: "POST",
             body: JSON.stringify({
                 name: name,
             } as CreateUserReq),
             credentials: "include",
         });
+        await invalidateAll();
         await goto("/games");
     };
 </script>

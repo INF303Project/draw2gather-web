@@ -1,14 +1,20 @@
 <script>
+    import { page } from "$app/stores";
+    import Error from "$lib/components/Error.svelte";
     import ScreenAdjust from "$lib/components/ScreenAdjust.svelte";
 </script>
 
-<div id="blocker">
-    <ScreenAdjust />
-</div>
+{#if $page.error}
+    <Error />
+{:else}
+    <div id="blocker">
+        <ScreenAdjust />
+    </div>
 
-<div id="content">
-    <slot />
-</div>
+    <div id="content">
+        <slot />
+    </div>
+{/if}
 
 <style>
     #blocker {

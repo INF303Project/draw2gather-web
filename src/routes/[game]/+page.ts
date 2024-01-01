@@ -5,26 +5,19 @@ import { redirect } from '@sveltejs/kit';
 
 export const load = (async ({ parent, params, fetch }) => {
     await parent();
-
     let joined: boolean = false;
 
-    try {
-        const resp = await fetch(`http://${API_URL}/game`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                game_id: params.game,
-            } as JoinGameReq),
-            credentials: "include",
-        });
-        if (resp.ok) {
-            joined = true;
-        }
-    } catch (error) {
-        console.error(error);
-    }
+    const resp = await fetch(`https://${API_URL}/game`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+            game_id: params.game,
+        } as JoinGameReq),
+        credentials: "include",
+    });
+    joined = resp.ok;
 
     if (!joined) {
         throw redirect(301, "/games");

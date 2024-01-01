@@ -6,26 +6,23 @@
     export let username: string;
 
     const gotoGames = async () => {
-        try {
-            await fetch(`http://${API_URL}/user`, {
-                method: "POST",
-                body: JSON.stringify({
-                    name: username,
-                } as CreateUserReq),
-                credentials: "include",
-            });
-            await goto("/games");
-        } catch (err) {
-            console.error(err);
-        }
+        await fetch(`https://${API_URL}/user`, {
+            method: "POST",
+            body: JSON.stringify({
+                name: username,
+            } as CreateUserReq),
+            credentials: "include",
+        });
+        await invalidateAll();
+        await goto("/games");
     };
 
     const signOut = async () => {
-        await fetch(`http://${API_URL}/logout`, {
+        await fetch(`https://${API_URL}/logout`, {
             method: "POST",
             credentials: "include",
         });
-        invalidateAll();
+        await invalidateAll();
     };
 </script>
 

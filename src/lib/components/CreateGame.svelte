@@ -16,7 +16,7 @@
     let visibility: boolean;
 
     const createGame = async () => {
-        const resp = await fetch(`http://${API_URL}/games`, {
+        const resp = await fetch(`https://${API_URL}/games`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

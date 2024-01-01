@@ -8,7 +8,7 @@
     const googleSignIn = async () => {
         const user = await signInWithPopup(auth, googleProvider);
         const token = await user.user.getIdToken();
-        await fetch(`http://${API_URL}/login`, {
+        await fetch(`https://${API_URL}/login`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -16,7 +16,7 @@
                 Authorization: `Bearer ${token}`,
             },
         });
-        invalidateAll();
+        await invalidateAll();
     };
 </script>
 

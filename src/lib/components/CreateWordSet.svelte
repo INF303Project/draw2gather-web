@@ -15,27 +15,23 @@
         if (words.length < 50) {
             alert("Word set must have at least 50 words.");
         } else {
-            try {
-                const res = await fetch(`http://${API_URL}/set`, {
-                    method: "POST",
-                    credentials: "include",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        name,
-                        language,
-                        words,
-                    }),
-                });
-                if (!res.ok) {
-                    alert(await res.text());
-                } else {
-                    await invalidateAll();
-                    dispatch("back");
-                }
-            } catch (error) {
-                console.error(error);
+            const res = await fetch(`https://${API_URL}/set`, {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    name,
+                    language,
+                    words,
+                }),
+            });
+            if (!res.ok) {
+                alert(await res.text());
+            } else {
+                await invalidateAll();
+                dispatch("back");
             }
         }
     };

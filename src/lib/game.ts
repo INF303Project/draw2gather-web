@@ -93,7 +93,7 @@ export const publishMessage = (action: Action, value: any = undefined): void => 
     messageQueue.update((messages) =>
         [...messages, {
             action: action,
-            payload: JSON.stringify({ value }),
+            payload: value ? JSON.stringify({ value }) : undefined,
         }]
     );
 }
@@ -106,7 +106,7 @@ export class Game {
     private players: Map<string, Player> = new Map<string, Player>();
     private guesses: MessagePayload[] = [];
     private chat: MessagePayload[] = [];
-    private readonly socket: WebSocket = new WebSocket(`ws://${API_URL}/game`);
+    private readonly socket: WebSocket = new WebSocket(`wss://${API_URL}/game`);
 
     constructor() {
         player.set("");

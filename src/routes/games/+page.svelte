@@ -28,14 +28,14 @@
     const filterLang = async (e: Event) => {
         const lang = (e.target as HTMLSelectElement).value;
         if (lang === "ALL") {
-            const res = await fetch(`http://${API_URL}/games`, {
+            const res = await fetch(`https://${API_URL}/games`, {
                 credentials: "include",
             });
             const newData = (await res.json()) as GetGameResp;
             games = newData;
         } else {
             const res = await fetch(
-                `http://${API_URL}/games?lang=${lang}`,
+                `https://${API_URL}/games?lang=${lang}`,
                 {
                     credentials: "include",
                 },
