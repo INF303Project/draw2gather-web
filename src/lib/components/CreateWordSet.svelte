@@ -17,7 +17,7 @@
             alert("Word set must have at least 50 words.");
         } else {
             $loading = true;
-            const res = await fetch(`https://${API_URL}/set`, {
+            const res = await fetch(`http://${API_URL}/set`, {
                 method: "POST",
                 credentials: "include",
                 headers: {

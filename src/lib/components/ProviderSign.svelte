@@ -10,7 +10,7 @@
         const user = await signInWithPopup(auth, googleProvider);
         const token = await user.user.getIdToken();
         $loading = true;
-        await fetch(`https://${API_URL}/login`, {
+        await fetch(`http://${API_URL}/login`, {
             method: "POST",
             credentials: "include",
             headers: {

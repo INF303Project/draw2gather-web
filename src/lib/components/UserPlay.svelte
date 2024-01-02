@@ -9,7 +9,7 @@
 
     const gotoGames = async () => {
         $loading = true;
-        await fetch(`https://${API_URL}/user`, {
+        await fetch(`http://${API_URL}/user`, {
             method: "POST",
             body: JSON.stringify({
                 name: newName,
@@ -23,7 +23,7 @@
 
     const signOut = async () => {
         $loading = true;
-        await fetch(`https://${API_URL}/logout`, {
+        await fetch(`http://${API_URL}/logout`, {
             method: "POST",
             credentials: "include",
         });
