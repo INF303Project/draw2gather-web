@@ -315,12 +315,12 @@ export class Game {
 
     private addPlayer = (p: Player): void => {
         this.players.set(p.id, p);
-        players.set(Array.from(this.players.values()));
+        players.set(this.sortedPlayers());
     }
 
     private removePlayer = (id: string): void => {
         this.players.delete(id);
-        players.set(Array.from(this.players.values()));
+        players.set(this.sortedPlayers());
     }
 
     private addGuess(message: MessagePayload): void {

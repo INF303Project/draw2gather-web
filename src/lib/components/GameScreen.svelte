@@ -3,6 +3,7 @@
         currentPlayer,
         owner,
         player,
+        players,
         state,
         word,
         words,
@@ -46,7 +47,7 @@
     <div id="game">
         {#if $state == "waiting"}
             <span>Waiting for players</span>
-            {#if $owner == $player}
+            {#if $owner == $player && $players.length > 1}
                 <button class="btn btn-primary" on:click={startGame}
                     >Start</button
                 >
