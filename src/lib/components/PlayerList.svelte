@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { owner, player, players } from "$lib/stores";
+    import { currentPlayer, owner, player, players } from "$lib/stores";
     import kick from "$lib/assets/kick.svg";
     import { Action, publishMessage } from "$lib/game";
 
@@ -18,8 +18,14 @@
     <div id="players">
         {#each $players as p}
             <div class="row" style="border-bottom: 1px solid;">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
+                <div
+                    class="d-flex justify-content-between align-items-center"
+                    style="overflow: hidden;"
+                >
+                    <div style="overflow: auto;">
+                        {#if $currentPlayer == p.id}
+                            <b style="color: blue;">•</b>
+                        {/if}
                         {#if $player == p.id}
                             <b style="color: blue;">{p.name}</b>
                         {:else}
@@ -60,6 +66,7 @@
     }
 
     #players {
+        width: 100%;
         overflow-x: hidden;
         overflow-y: auto;
     }

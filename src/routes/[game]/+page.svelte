@@ -29,7 +29,7 @@
         <div
             class="d-none d-md-flex justify-content-center align-items-start col-md-3 h-100"
         >
-            <div class="col h-100">
+            <div class="col h-100 w-100">
                 <PlayerList />
             </div>
             {#if $state == "drawing" && $player == $currentPlayer}
