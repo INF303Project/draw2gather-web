@@ -15,6 +15,7 @@ To run this locally, you should use the `demo` brach, demo branch is configured 
 
 - Checkout to demo branch
     ```
+    cd draw2gather-web
     git checkout demo
     ```
 
