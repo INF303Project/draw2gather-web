@@ -9,7 +9,7 @@
 
     const gotoGames = async () => {
         $loading = true;
-        await fetch(`https://${API_URL}/user`, {
+        await fetch(`http://${API_URL}/user`, {
             method: "POST",
             body: JSON.stringify({
                 name: newName,

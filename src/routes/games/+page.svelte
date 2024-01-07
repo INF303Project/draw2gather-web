@@ -30,7 +30,7 @@
         const lang = (e.target as HTMLSelectElement).value;
         if (lang === "ALL") {
             $loading = true;
-            const res = await fetch(`https://${API_URL}/games`, {
+            const res = await fetch(`http://${API_URL}/games`, {
                 credentials: "include",
             });
             const newData = (await res.json()) as GetGameResp;
@@ -38,7 +38,7 @@
             $loading = false;
         } else {
             $loading = true;
-            const res = await fetch(`https://${API_URL}/games?lang=${lang}`, {
+            const res = await fetch(`http://${API_URL}/games?lang=${lang}`, {
                 credentials: "include",
             });
             const newData = (await res.json()) as GetGameResp;

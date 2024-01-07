@@ -106,7 +106,7 @@ export class Game {
     private players: Map<string, Player> = new Map<string, Player>();
     private guesses: MessagePayload[] = [];
     private chat: MessagePayload[] = [];
-    private readonly socket: WebSocket = new WebSocket(`wss://${API_URL}/game`);
+    private readonly socket: WebSocket = new WebSocket(`ws://${API_URL}/game`);
 
     constructor() {
         player.set("");

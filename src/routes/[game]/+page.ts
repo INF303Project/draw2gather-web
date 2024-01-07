@@ -7,7 +7,7 @@ export const load = (async ({ parent, params, fetch }) => {
     await parent();
     let joined: boolean = false;
 
-    const resp = await fetch(`https://${API_URL}/game`, {
+    const resp = await fetch(`http://${API_URL}/game`, {
         method: "PUT",
         headers: {
             "Content-Type": "application/json",
