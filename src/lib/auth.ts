@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { GoogleAuthProvider, getAuth, browserSessionPersistence } from "firebase/auth";
+import { GoogleAuthProvider, getAuth, browserSessionPersistence, connectAuthEmulator } from "firebase/auth";
 
 const firebaseConfig = {
     apiKey: "AIzaSyAImgHqxtqTzXj5VnLnn5O905jkGGScRMQ",
@@ -15,3 +15,4 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 auth.setPersistence(browserSessionPersistence);
+connectAuthEmulator(auth, "http://localhost:9099");
