@@ -1,38 +1,29 @@
-# create-svelte
+## Draw2Gather Website
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+This repository contains Draw2Gather website, an SPA built with Svelte/Sveltekit. Main branch is for production, it's currently available at https://draw2gather.online. Website works together with our [API](https://github.com/INF303Project/draw2gather), in order to run this application you first have to setup the API and install NodeJS.
 
-## Creating a project
+### Configuration
 
-If you're seeing this, you've probably already done this step. Congrats!
+To run this locally, you should use the `demo` brach, demo branch is configured to make API calls to `localhost:8080`. You can change it with `API_URL` variable. Also when you run this with default `Vite` server, it listens port `5173`, if you run it on another port, we also have to configure CORS settings of the API. Server not only serves to your machine, but also your local network, therefore you can access the website from other devices, but again CORS settings will not allow them, thus configure it with your IP.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+### Setup
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+- Clone the repository
+    ```
+    git clone https://github.com/INF303Project/draw2gather-web.git
+    ```
 
-## Developing
+- Checkout to demo branch
+    ```
+    git checkout demo
+    ```
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+- Install dependencies
+    ```
+    npm i
+    ```
 
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```bash
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+- Run server
+    ```
+    npm run dev
+    ```
